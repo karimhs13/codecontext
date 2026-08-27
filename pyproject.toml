@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "codecontext"
+version = "0.1.0"
+description = "Local-first CLI for code parsing, semantic search (RAG), git auditing, and AI code review."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "codecontext" }]
+keywords = ["cli", "rag", "code-search", "git", "llm", "ast", "vector-db"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Environment :: Console",
+    "Topic :: Software Development",
+]
+
+dependencies = [
+    "typer[all]>=0.12.3",
+    "rich>=13.7.1",
+    "tree-sitter>=0.23",
+    "tree-sitter-language-pack>=0.2.0",
+    "chromadb>=0.5.0",
+    "fastembed>=0.3.4",
+    "litellm>=1.43.0",
+    "gitpython>=3.1.43",
+    "pathspec>=0.12.1",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.3.0",
+]
+
+[project.scripts]
+codecontext = "codecontext.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/codecontext"]
