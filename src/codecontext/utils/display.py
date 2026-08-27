@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rich.console import Console
 from rich.markdown import Markdown
+from rich.markup import escape
 from rich.panel import Panel
 from rich.progress import (
     BarColumn,
@@ -95,10 +96,11 @@ def search_results_table(results: list[dict]) -> Table:
     table.add_column("Score", justify="right")
     for i, r in enumerate(results, start=1):
         meta = r["metadata"]
+        symbol = f"{meta.get('entity_type', '?')} {meta.get('name', '')}".strip()
         table.add_row(
             str(i),
-            meta.get("file_path", "?"),
-            f"{meta.get('entity_type', '?')} {meta.get('name', '')}".strip(),
+            escape(str(meta.get("file_path", "?"))),
+            escape(symbol),
             f"{meta.get('start_line', '?')}-{meta.get('end_line', '?')}",
             f"{r.get('score', 0.0):.3f}",
         )
@@ -122,9 +124,9 @@ def review_findings_table(findings: list[dict]) -> Table:
         sev = str(f.get("severity", "info")).lower()
         style = severity_style.get(sev, "white")
         table.add_row(
-            f"[{style}]{sev.upper()}[/{style}]",
-            f.get("category", "-"),
-            f.get("location", "-"),
-            f.get("issue", "-"),
+            f"[{style}]{escape(sev.upper())}[/{style}]",
+            escape(str(f.get("category", "-"))),
+            escape(str(f.get("location", "-"))),
+            escape(str(f.get("issue", "-"))),
         )
     return table

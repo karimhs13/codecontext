@@ -17,7 +17,7 @@ def _module_name_from_import(text: str, language: str) -> str | None:
     if language == "python":
         m = _PY_IMPORT_MODULE_RE.match(text)
         if m:
-            return (m.group(1) or m.group(2) or "").split(".")[0] or None
+            return m.group(1) or m.group(2) or None
     elif language in ("javascript", "typescript", "tsx"):
         m = _JS_IMPORT_PATH_RE.search(text)
         if m:
