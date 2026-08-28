@@ -59,7 +59,11 @@ def _chunk_document(chunk: CodeChunk) -> str:
 class VectorStore:
     """Thin wrapper around a persistent ChromaDB collection for code chunks."""
 
-    def __init__(self, root: Path | None = None) -> None:
+    def __init__(
+        self,
+        root: Path | None = None,
+        embedding_fn: EmbeddingFunction[Documents] | None = None,
+    ) -> None:
         self.root = root
         self.persist_dir = chroma_dir(root)
         self.persist_dir.mkdir(parents=True, exist_ok=True)
@@ -67,7 +71,7 @@ class VectorStore:
             path=str(self.persist_dir),
             settings=ChromaSettings(anonymized_telemetry=False),
         )
-        self._embedding_fn = FastEmbedFunction()
+        self._embedding_fn = embedding_fn or FastEmbedFunction()
         self._collection = self._client.get_or_create_collection(
             name=COLLECTION_NAME,
             embedding_function=self._embedding_fn,

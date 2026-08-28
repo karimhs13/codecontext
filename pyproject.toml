@@ -32,8 +32,17 @@ dependencies = [
     "pydantic-settings>=2.3.0",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+]
+
 [project.scripts]
 codecontext = "codecontext.main:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/codecontext"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
