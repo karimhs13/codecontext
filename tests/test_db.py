@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from conftest import FakeEmbeddingFunction
+
 from codecontext.core.db import VectorStore
 from codecontext.core.parser import CodeChunk
-
-from conftest import FakeEmbeddingFunction
 
 
 def _chunk(file_path: str, name: str) -> CodeChunk:
@@ -20,7 +20,9 @@ def _chunk(file_path: str, name: str) -> CodeChunk:
     )
 
 
-def test_upsert_and_query_roundtrip(tmp_path: Path, fake_embedding_fn: FakeEmbeddingFunction) -> None:
+def test_upsert_and_query_roundtrip(
+    tmp_path: Path, fake_embedding_fn: FakeEmbeddingFunction
+) -> None:
     store = VectorStore(tmp_path, embedding_fn=fake_embedding_fn)
     chunks = [_chunk("a.py", "foo"), _chunk("b.py", "bar")]
 

@@ -108,8 +108,7 @@ def provider_env_ok(provider: str, settings: Settings) -> tuple[bool, str | None
     elif provider == "openai":
         if not (settings.openai_api_key or os.environ.get("OPENAI_API_KEY")):
             return False, (
-                "OPENAI_API_KEY is not set. Export it or add it to a .env "
-                "file in this directory."
+                "OPENAI_API_KEY is not set. Export it or add it to a .env file in this directory."
             )
     elif provider == "ollama":
         pass  # checked live via a connection probe in llm.py

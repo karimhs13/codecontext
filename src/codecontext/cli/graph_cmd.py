@@ -10,9 +10,13 @@ from codecontext.core.graph_builder import GraphBuilder
 from codecontext.utils.config import project_root
 from codecontext.utils.display import console, print_error, print_info, print_success
 
+
 def graph(
     output: Path = typer.Option(
-        None, "--output", "-o", help="Write the Mermaid diagram to this Markdown file instead of stdout."
+        None,
+        "--output",
+        "-o",
+        help="Write the Mermaid diagram to this Markdown file instead of stdout.",
     ),
 ) -> None:
     """Extract module imports/calls across the codebase and emit a Mermaid diagram."""

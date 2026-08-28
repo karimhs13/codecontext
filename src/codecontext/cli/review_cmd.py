@@ -7,11 +7,25 @@ from pathlib import Path
 
 import typer
 
-from codecontext.core.git_utils import FileDiff, GitError, current_branch, get_diff, open_repo, repo_status_summary
+from codecontext.core.git_utils import (
+    FileDiff,
+    GitError,
+    current_branch,
+    get_diff,
+    open_repo,
+    repo_status_summary,
+)
 from codecontext.core.llm import LLMError, complete
 from codecontext.core.parser import CodeChunk, CodeParser, language_for_path
 from codecontext.utils.config import SUPPORTED_PROVIDERS, get_settings, project_root
-from codecontext.utils.display import console, print_error, print_info, print_markdown, print_warning, review_findings_table
+from codecontext.utils.display import (
+    console,
+    print_error,
+    print_info,
+    print_markdown,
+    print_warning,
+    review_findings_table,
+)
 
 SYSTEM_PROMPT = """You are codecontext, a senior staff software engineer performing a \
 rigorous code review of a git diff. You will be given the diff plus the enclosing \
@@ -56,7 +70,8 @@ def _build_review_context(root: Path, diffs: list[FileDiff]) -> str:
                 for chunk in touched:
                     blocks.append(
                         f"### Enclosing {chunk.entity_type} `{chunk.name}` in {chunk.file_path} "
-                        f"(lines {chunk.start_line}-{chunk.end_line})\n```{chunk.language}\n{chunk.code}\n```"
+                        f"(lines {chunk.start_line}-{chunk.end_line})\n"
+                        f"```{chunk.language}\n{chunk.code}\n```"
                     )
     return "\n\n".join(blocks)
 
@@ -82,12 +97,16 @@ def _parse_llm_json(text: str) -> dict:
 
 def review(
     staged: bool = typer.Option(
-        False, "--staged", help="Review staged changes (git diff --staged) instead of the working tree."
+        False,
+        "--staged",
+        help="Review staged changes (git diff --staged) instead of the working tree.",
     ),
     uncached: bool = typer.Option(
         False, "--uncached", help="Review unstaged working-tree changes (default behavior)."
     ),
-    provider: str = typer.Option(None, "--provider", help=f"LLM provider: {', '.join(SUPPORTED_PROVIDERS)}."),
+    provider: str = typer.Option(
+        None, "--provider", help=f"LLM provider: {', '.join(SUPPORTED_PROVIDERS)}."
+    ),
     model: str = typer.Option(None, "--model", help="Model name override for the chosen provider."),
 ) -> None:
     """Analyze the current git diff for security, performance, and code-smell issues."""
@@ -127,7 +146,9 @@ def review(
     resolved_model = settings.resolved_model(resolved_provider, model)
 
     if resolved_provider not in SUPPORTED_PROVIDERS:
-        print_error(f"Unknown provider '{resolved_provider}'. Supported: {', '.join(SUPPORTED_PROVIDERS)}.")
+        print_error(
+            f"Unknown provider '{resolved_provider}'. Supported: {', '.join(SUPPORTED_PROVIDERS)}."
+        )
         raise typer.Exit(code=1)
 
     print_info(f"Mapping {len(diffs)} changed file(s) to AST symbols...")

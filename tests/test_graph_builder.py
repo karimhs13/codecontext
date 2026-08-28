@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from codecontext.core.graph_builder import GraphBuilder, _module_name_from_import, _resolve_local_module
+from codecontext.core.graph_builder import (
+    GraphBuilder,
+    _module_name_from_import,
+    _resolve_local_module,
+)
 
 
 def test_module_name_from_import_keeps_full_dotted_path() -> None:

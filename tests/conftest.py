@@ -6,7 +6,7 @@ import hashlib
 from pathlib import Path
 
 import pytest
-from chromadb.api.types import Documents, Embeddings, EmbeddingFunction
+from chromadb.api.types import Documents, EmbeddingFunction, Embeddings
 from git import Repo
 
 

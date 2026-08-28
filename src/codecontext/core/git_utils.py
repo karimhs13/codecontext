@@ -28,9 +28,7 @@ def open_repo(root: Path | None = None) -> Repo:
     try:
         repo = Repo(path, search_parent_directories=True)
     except (InvalidGitRepositoryError, NoSuchPathError) as e:
-        raise GitError(
-            f"'{path}' is not inside a git repository. Run `git init` first."
-        ) from e
+        raise GitError(f"'{path}' is not inside a git repository. Run `git init` first.") from e
     if repo.bare:
         raise GitError("The git repository is bare; no working tree to diff.")
     return repo
@@ -81,7 +79,9 @@ def _parse_unified_diff(diff_text: str) -> dict[str, FileDiff]:
         patch_lines.append(line)
         if line.startswith("+++ b/"):
             current_file = line[6:]
-            files.setdefault(current_file, FileDiff(file_path=current_file, change_type=change_type))
+            files.setdefault(
+                current_file, FileDiff(file_path=current_file, change_type=change_type)
+            )
         elif line.startswith("new file mode"):
             change_type = "added"
         elif line.startswith("deleted file mode"):

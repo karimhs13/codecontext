@@ -17,7 +17,9 @@ def test_resolved_model_override_wins(monkeypatch: pytest.MonkeyPatch) -> None:
     assert settings.resolved_model("anthropic", override="explicit-model") == "explicit-model"
 
 
-def test_resolved_model_uses_configured_model_when_no_override(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resolved_model_uses_configured_model_when_no_override(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setenv("CODECONTEXT_MODEL", "configured-model")
     settings = _settings()
     assert settings.resolved_model("anthropic", override=None) == "configured-model"

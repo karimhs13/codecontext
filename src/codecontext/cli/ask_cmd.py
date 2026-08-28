@@ -7,7 +7,13 @@ import typer
 from codecontext.core.db import VectorStore
 from codecontext.core.llm import LLMError, stream_complete
 from codecontext.utils.config import SUPPORTED_PROVIDERS, get_settings, index_exists, project_root
-from codecontext.utils.display import console, print_error, print_info, print_warning, search_results_table
+from codecontext.utils.display import (
+    console,
+    print_error,
+    print_info,
+    print_warning,
+    search_results_table,
+)
 
 SYSTEM_PROMPT = """You are codecontext, an expert AI pair programmer with access to \
 retrieved snippets from the user's local codebase. Answer the user's question using \
@@ -32,7 +38,9 @@ def _build_prompt(query: str, results: list[dict]) -> str:
 def ask(
     query: str = typer.Argument(..., help="Natural-language question about the codebase."),
     provider: str = typer.Option(
-        None, "--provider", help=f"LLM provider: {', '.join(SUPPORTED_PROVIDERS)}. Defaults to config/env."
+        None,
+        "--provider",
+        help=f"LLM provider: {', '.join(SUPPORTED_PROVIDERS)}. Defaults to config/env.",
     ),
     model: str = typer.Option(None, "--model", help="Model name override for the chosen provider."),
     top_k: int = typer.Option(None, "--top-k", help="Number of context chunks to retrieve."),
@@ -54,10 +62,12 @@ def ask(
     resolved_model = settings.resolved_model(resolved_provider, model)
 
     if resolved_provider not in SUPPORTED_PROVIDERS:
-        print_error(f"Unknown provider '{resolved_provider}'. Supported: {', '.join(SUPPORTED_PROVIDERS)}.")
+        print_error(
+            f"Unknown provider '{resolved_provider}'. Supported: {', '.join(SUPPORTED_PROVIDERS)}."
+        )
         raise typer.Exit(code=1)
 
-    print_info(f"Searching index for: \"{query}\"")
+    print_info(f'Searching index for: "{query}"')
     store = VectorStore(root)
     try:
         results = store.query(query, top_k=resolved_top_k)
@@ -66,7 +76,9 @@ def ask(
         raise typer.Exit(code=1) from e
 
     if not results:
-        print_warning("No relevant context found in the index. Answering from general knowledge only.")
+        print_warning(
+            "No relevant context found in the index. Answering from general knowledge only."
+        )
 
     if show_context:
         console.print(search_results_table(results))

@@ -7,8 +7,9 @@ from pathlib import Path
 from typing import Any
 
 import chromadb
-from chromadb.api.types import Documents, Embeddings, EmbeddingFunction
+from chromadb.api.types import Documents, EmbeddingFunction, Embeddings
 from chromadb.config import Settings as ChromaSettings
+from chromadb.errors import NotFoundError
 
 from codecontext.core.parser import CodeChunk
 from codecontext.utils.config import COLLECTION_NAME, EMBEDDING_MODEL_NAME, chroma_dir
@@ -35,7 +36,7 @@ class FastEmbedFunction(EmbeddingFunction[Documents]):
         vectors = list(self._model.embed(list(input)))
         return [v.tolist() for v in vectors]
 
-    def name(self) -> str:
+    def name(self) -> str:  # type: ignore[override]
         return "fastembed-bge-small-en-v1.5"
 
 
@@ -74,18 +75,18 @@ class VectorStore:
         self._embedding_fn = embedding_fn or FastEmbedFunction()
         self._collection = self._client.get_or_create_collection(
             name=COLLECTION_NAME,
-            embedding_function=self._embedding_fn,
+            embedding_function=self._embedding_fn,  # type: ignore[arg-type]
             metadata={"hnsw:space": "cosine"},
         )
 
     def reset(self) -> None:
         try:
             self._client.delete_collection(COLLECTION_NAME)
-        except Exception:
+        except NotFoundError:
             pass
         self._collection = self._client.get_or_create_collection(
             name=COLLECTION_NAME,
-            embedding_function=self._embedding_fn,
+            embedding_function=self._embedding_fn,  # type: ignore[arg-type]
             metadata={"hnsw:space": "cosine"},
         )
 
@@ -111,7 +112,11 @@ class VectorStore:
                 }
                 for c in batch
             ]
-            self._collection.upsert(ids=ids, documents=documents, metadatas=metadatas)
+            self._collection.upsert(
+                ids=ids,
+                documents=documents,
+                metadatas=metadatas,  # type: ignore[arg-type]
+            )
             total += len(batch)
         return total
 
@@ -125,10 +130,10 @@ class VectorStore:
             include=["documents", "metadatas", "distances"],
         )
         results: list[dict[str, Any]] = []
-        docs = result.get("documents", [[]])[0]
-        metas = result.get("metadatas", [[]])[0]
-        dists = result.get("distances", [[]])[0]
-        for doc, meta, dist in zip(docs, metas, dists):
+        docs = (result.get("documents") or [[]])[0]
+        metas = (result.get("metadatas") or [[]])[0]
+        dists = (result.get("distances") or [[]])[0]
+        for doc, meta, dist in zip(docs, metas, dists, strict=True):
             score = 1.0 - dist  # cosine distance -> similarity
             results.append({"document": doc, "metadata": meta, "score": score})
         return results

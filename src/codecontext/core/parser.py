@@ -69,6 +69,7 @@ def iter_source_files(root: Path) -> list[Path]:
     walk(root)
     return results
 
+
 EXTENSION_LANGUAGE_MAP: dict[str, str] = {
     ".py": "python",
     ".js": "javascript",

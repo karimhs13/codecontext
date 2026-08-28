@@ -25,9 +25,9 @@ app.command(name="init", help="Scan and index the current repository for semanti
 app.command(
     name="ask", help="Ask a question about the codebase using local semantic search + an LLM."
 )(ask_cmd.ask)
-app.command(
-    name="review", help="Audit staged or unstaged git changes with AST-aware AI review."
-)(review_cmd.review)
+app.command(name="review", help="Audit staged or unstaged git changes with AST-aware AI review.")(
+    review_cmd.review
+)
 app.command(name="graph", help="Generate a Mermaid.js dependency graph of the codebase.")(
     graph_cmd.graph
 )
@@ -42,7 +42,12 @@ def _version_callback(value: bool) -> None:
 @app.callback()
 def main(
     version: bool = typer.Option(
-        False, "--version", "-v", callback=_version_callback, is_eager=True, help="Show version and exit."
+        False,
+        "--version",
+        "-v",
+        callback=_version_callback,
+        is_eager=True,
+        help="Show version and exit.",
     ),
 ) -> None:
     """codecontext: local-first RAG, git auditing, and AI code review."""

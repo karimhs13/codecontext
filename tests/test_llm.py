@@ -3,7 +3,12 @@ from __future__ import annotations
 import httpx
 import pytest
 
-from codecontext.core.llm import LLMError, _litellm_model_id, check_ollama_available, preflight_check
+from codecontext.core.llm import (
+    LLMError,
+    _litellm_model_id,
+    check_ollama_available,
+    preflight_check,
+)
 from codecontext.utils.config import Settings
 
 
@@ -16,11 +21,14 @@ def test_litellm_model_id_ollama() -> None:
 
 
 def test_litellm_model_id_anthropic_adds_prefix_when_missing() -> None:
-    assert _litellm_model_id("anthropic", "opus-5", "") == "claude/opus-5"
+    assert _litellm_model_id("anthropic", "opus-5", "") == "anthropic/opus-5"
 
 
 def test_litellm_model_id_anthropic_keeps_claude_prefixed_name() -> None:
-    assert _litellm_model_id("anthropic", "claude-3-5-sonnet-20241022", "") == "claude-3-5-sonnet-20241022"
+    assert (
+        _litellm_model_id("anthropic", "claude-3-5-sonnet-20241022", "")
+        == "claude-3-5-sonnet-20241022"
+    )
 
 
 def test_litellm_model_id_openai_passthrough() -> None:

@@ -9,7 +9,14 @@ import typer
 from codecontext.core.db import VectorStore
 from codecontext.core.parser import CodeParser, iter_source_files
 from codecontext.utils.config import ensure_codecontext_dir, project_root
-from codecontext.utils.display import build_progress, console, index_summary_table, print_error, print_success
+from codecontext.utils.display import (
+    build_progress,
+    console,
+    index_summary_table,
+    print_error,
+    print_success,
+)
+
 
 def init(
     reset: bool = typer.Option(
@@ -23,8 +30,7 @@ def init(
     files = iter_source_files(root)
     if not files:
         print_error(
-            "No supported source files found (Python, JS/TS, C/C++, Java). "
-            "Nothing to index."
+            "No supported source files found (Python, JS/TS, C/C++, Java). Nothing to index."
         )
         raise typer.Exit(code=1)
 

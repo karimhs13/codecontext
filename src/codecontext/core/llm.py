@@ -7,7 +7,7 @@ from collections.abc import Iterator
 
 import httpx
 
-from codecontext.utils.config import Settings, SUPPORTED_PROVIDERS
+from codecontext.utils.config import SUPPORTED_PROVIDERS, Settings
 
 
 class LLMError(RuntimeError):
@@ -18,7 +18,7 @@ def _litellm_model_id(provider: str, model: str, ollama_host: str) -> str:
     if provider == "ollama":
         return f"ollama/{model}"
     if provider == "anthropic":
-        return model if model.startswith("claude") else f"claude/{model}"
+        return model if model.startswith("claude") else f"anthropic/{model}"
     if provider == "openai":
         return model
     raise LLMError(f"Unknown provider '{provider}'. Supported: {', '.join(SUPPORTED_PROVIDERS)}")
@@ -29,9 +29,7 @@ def check_ollama_available(host: str) -> None:
         resp = httpx.get(f"{host.rstrip('/')}/api/tags", timeout=3.0)
         resp.raise_for_status()
     except httpx.HTTPError as e:
-        raise LLMError(
-            f"Could not reach Ollama at {host}. Is `ollama serve` running? ({e})"
-        ) from e
+        raise LLMError(f"Could not reach Ollama at {host}. Is `ollama serve` running? ({e})") from e
 
 
 def preflight_check(provider: str, settings: Settings) -> None:
@@ -45,9 +43,7 @@ def preflight_check(provider: str, settings: Settings) -> None:
     elif provider == "anthropic":
         key = settings.anthropic_api_key or os.environ.get("ANTHROPIC_API_KEY")
         if not key:
-            raise LLMError(
-                "ANTHROPIC_API_KEY is not set. Export it or add it to a .env file."
-            )
+            raise LLMError("ANTHROPIC_API_KEY is not set. Export it or add it to a .env file.")
     elif provider == "openai":
         key = settings.openai_api_key or os.environ.get("OPENAI_API_KEY")
         if not key:
